@@ -3,7 +3,7 @@ require('dotenv').config()
 const axios = require ('axios')
 const appid = process.env.appid
 
-const q = 'Sao Paulo'
+const q = 'Manaus'
 
 //Metric celsius
 //Imperail fazhnheit
@@ -44,12 +44,24 @@ axios
     })
     .then((res) => {
         //para cada resultado, mostra algumas informações
-        for(let previsao of res)
+        for(let previsao of res){
         console.log(`
             ${new Date(previsao.dt * 1000).toLocaleString()},
             ${'Min: ' + previsao.main.temp_min}\u00B0C,
             ${'Max: ' + previsao.main.temp_max}\u00B0C,
-            ${'Umd: ' + previsao.main.humidity}%
-            ${previsao.weather[0].description}
+            ${'Umd: ' + previsao.main.humidity}%,
+            ${previsao.weather[0].deion}
         `)
+        }
+        return res
     })
+    .then((res) => {
+        //verificar quantas previsões tem percepção humana
+        //de temperatura acima de 30 graus
+        const lista = res.filter(r => r.main.feels_like >= 30)
+        console.log(`${lista.length} previsões têm percepção humana de temperatura acima de 30 graus`)
+    })
+   .catch((err) => {
+        console.log("Deu erro:", err)
+   })
+ 
